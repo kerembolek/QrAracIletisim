@@ -1,0 +1,99 @@
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* App theme: dark teal navbar, soft grey page with white tables and cards */
+:root {
+  --app-navy: #123a44;
+  --app-navy-light: #1f5361;
+}
+
+body {
+  margin-bottom: 60px;
+  background-color: #f4f6fa;
+}
+
+.app-navbar {
+  background-color: var(--app-navy);
+  box-shadow: 0 2px 6px rgba(16, 24, 40, .15);
+}
+
+.app-navbar .navbar-brand {
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+.app-navbar .nav-link {
+  border-radius: .375rem;
+  padding-left: .65rem !important;
+  padding-right: .65rem !important;
+  white-space: nowrap;
+}
+
+.app-navbar .nav-link.active,
+.app-navbar .nav-link:hover {
+  background-color: var(--app-navy-light);
+}
+
+h1 {
+  font-weight: 600;
+  margin-bottom: .75rem;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--bs-border-color);
+  border-radius: .5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+}
+
+.table > thead th {
+  background-color: #eef1f6;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #4a5568;
+}
+
+.table > tbody > tr:last-child > * {
+  border-bottom-width: 0;
+}
+
+.card {
+  border-color: #e3e7ef;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+}
+
+/* Square icon inside a home page card or a stats card */
+.icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: .6rem;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+/* On narrow screens wide tables scroll sideways inside their own frame instead of widening the page */
+@media (max-width: 767.98px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+  }
+}
