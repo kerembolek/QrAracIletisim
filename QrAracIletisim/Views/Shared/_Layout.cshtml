@@ -32,6 +32,12 @@
                         <li class="nav-item">
                             <a class="nav-link@(Active("Home"))" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Ana Sayfa</a>
                         </li>
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link@(Active("Outbox"))" asp-area="" asp-controller="Outbox" asp-action="Index"><i class="bi bi-envelope-paper"></i> Giden Kutusu</a>
+                        </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

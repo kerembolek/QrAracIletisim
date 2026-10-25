@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QrAracIletisim.Data;
 using QrAracIletisim.Models;
 using QrAracIletisim.Services;
+using QrAracIletisim.Services.Providers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 // Re-check sign-in cookies against the security stamp every minute, so a phone change or role change takes effect quickly
 builder.Services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.FromMinutes(1));
+
+// SMS, WhatsApp and call masking; the fake providers write to the outbox table instead of a paid service
+builder.Services.AddMessagingProviders();
 
 builder.Services.AddControllersWithViews();
 

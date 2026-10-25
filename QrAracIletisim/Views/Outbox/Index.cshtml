@@ -1,0 +1,87 @@
+@using QrAracIletisim.Services
+@model List<OutboxMessage>
+@{
+    ViewData["Title"] = "Giden Kutusu";
+    var current = ViewData["Channel"] as OutboxChannel?;
+    string ChannelLabel(OutboxChannel c) => c switch
+    {
+        OutboxChannel.Sms => "SMS",
+        OutboxChannel.WhatsApp => "WhatsApp",
+        _ => "Arama"
+    };
+    string ChannelBadge(OutboxChannel c) => c switch
+    {
+        OutboxChannel.Sms => "text-bg-primary",
+        OutboxChannel.WhatsApp => "text-bg-success",
+        _ => "text-bg-warning"
+    };
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="mb-0"><i class="bi bi-envelope-paper"></i> Giden Kutusu</h1>
+    <div class="btn-group" role="group" aria-label="Kanal filtresi">
+        <a asp-action="Index" class="btn btn-outline-secondary@(current is null ? " active" : "")">Tümü</a>
+        @foreach (var c in Enum.GetValues<OutboxChannel>())
+        {
+            <a asp-action="Index" asp-route-channel="@c" class="btn btn-outline-secondary@(current == c ? " active" : "")">@ChannelLabel(c)</a>
+        }
+    </div>
+</div>
+
+<div class="alert alert-secondary small d-flex gap-2">
+    <i class="bi bi-info-circle"></i>
+    <span>Demo sürümde gerçek SMS, WhatsApp veya arama gönderilmez. Sağlayıcıların göndereceği her şey burada listelenir; SMS doğrulama kodlarını da buradan okuyabilirsiniz.</span>
+</div>
+
+<details class="mb-3">
+    <summary class="mb-2">Deneme gönder</summary>
+    <form asp-action="SendTest" method="post" class="row g-2 align-items-end">
+        <div class="col-sm-4">
+            <label for="phoneNumber" class="form-label">Telefon</label>
+            <input id="phoneNumber" name="phoneNumber" class="form-control" placeholder="05xx xxx xx xx" />
+        </div>
+        <div class="col-sm-3">
+            <label for="channel" class="form-label">Kanal</label>
+            <select id="channel" name="channel" class="form-select">
+                @foreach (var c in Enum.GetValues<OutboxChannel>())
+                {
+                    <option value="@c">@ChannelLabel(c)</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Gönder</button>
+        </div>
+    </form>
+</details>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">Henüz gönderilmiş bir mesaj yok.</div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Kanal</th>
+                <th>Alıcı</th>
+                <th>İçerik</th>
+                <th>Sağlayıcı</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td class="text-nowrap">@m.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td><span class="badge @ChannelBadge(m.Channel)">@ChannelLabel(m.Channel)</span></td>
+                    <td class="text-nowrap">@PhoneNumbers.Mask(m.To)</td>
+                    <td>@m.Body</td>
+                    <td>@m.Provider</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
