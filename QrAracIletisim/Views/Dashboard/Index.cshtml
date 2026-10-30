@@ -1,0 +1,36 @@
+@model QrAracIletisim.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Pano";
+    var cards = new (string Label, int Value, string Icon, string Color)[]
+    {
+        ("Sahipsiz etiket", Model.Unclaimed, "bi-sticky", "secondary"),
+        ("Aktif etiket", Model.Active, "bi-check-circle", "success"),
+        ("Duraklatılan etiket", Model.Paused, "bi-pause-circle", "warning"),
+        ("İptal edilen etiket", Model.Revoked, "bi-x-circle", "danger"),
+        ("Araç sahibi", Model.Owners, "bi-people", "primary"),
+        ("Toplam okutma", Model.Scans, "bi-qr-code-scan", "info"),
+        ("Son 24 saat okutma", Model.ScansLast24Hours, "bi-clock-history", "info"),
+        ("İletilen mesaj", Model.MessagesDelivered, "bi-chat-dots", "success"),
+        ("Arama isteği", Model.CallRequests, "bi-telephone", "success"),
+        ("Reddedilen deneme", Model.Refused, "bi-shield-exclamation", "danger")
+    };
+}
+
+<h1><i class="bi bi-speedometer2"></i> Pano</h1>
+
+<div class="row g-3">
+    @foreach (var card in cards)
+    {
+        <div class="col-6 col-md-4 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-@card.Color-subtle text-@card.Color"><i class="bi @card.Icon"></i></div>
+                    <div>
+                        <div class="h4 mb-0">@card.Value</div>
+                        <div class="small text-muted">@card.Label</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

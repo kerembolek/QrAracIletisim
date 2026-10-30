@@ -1,0 +1,67 @@
+@model QrAracIletisim.Models.ViewModels.StickersIndexViewModel
+@{
+    ViewData["Title"] = "Etiketler";
+}
+
+<h1><i class="bi bi-qr-code"></i> Etiketler</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="h5">Toplu etiket üret</h2>
+        <form asp-action="Generate" method="post" class="row g-2 align-items-start">
+            <div class="col-sm-2">
+                <label asp-for="Generate.Count" class="form-label"></label>
+                <input asp-for="Generate.Count" class="form-control" min="1" max="500" />
+                <span asp-validation-for="Generate.Count" class="text-danger small"></span>
+            </div>
+            <div class="col-sm-7">
+                <label asp-for="Generate.Note" class="form-label"></label>
+                <input asp-for="Generate.Note" class="form-control" placeholder="Ör. Kasım baskısı" />
+                <span asp-validation-for="Generate.Note" class="text-danger small"></span>
+            </div>
+            <div class="col-sm-3">
+                <label class="form-label d-none d-sm-block">&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-lg"></i> Üret</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Batches.Count == 0)
+{
+    <div class="alert alert-info">Henüz etiket üretilmedi.</div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Parti</th>
+                <th>Tarih</th>
+                <th>Adet</th>
+                <th>Sahiplenilen</th>
+                <th>Not</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model.Batches)
+            {
+                <tr>
+                    <td>#@b.Id</td>
+                    <td class="text-nowrap">@b.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@b.Count</td>
+                    <td>@b.Claimed</td>
+                    <td>@b.Note</td>
+                    <td class="text-end">
+                        <a asp-action="Print" asp-route-id="@b.Id" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-printer"></i> Yazdır</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

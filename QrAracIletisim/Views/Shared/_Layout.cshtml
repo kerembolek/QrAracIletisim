@@ -35,6 +35,15 @@
                         @if (User.IsInRole(Roles.Admin))
                         {
                         <li class="nav-item">
+                            <a class="nav-link@(Active("Dashboard"))" asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i> Pano</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link@(Active("Stickers"))" asp-area="" asp-controller="Stickers" asp-action="Index"><i class="bi bi-qr-code"></i> Etiketler</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link@(Active("Users"))" asp-area="" asp-controller="Users" asp-action="Index"><i class="bi bi-people"></i> Kullanıcılar</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link@(Active("Outbox"))" asp-area="" asp-controller="Outbox" asp-action="Index"><i class="bi bi-envelope-paper"></i> Giden Kutusu</a>
                         </li>
                         }

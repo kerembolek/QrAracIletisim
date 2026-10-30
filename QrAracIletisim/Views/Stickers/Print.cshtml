@@ -1,0 +1,38 @@
+@model List<QrAracIletisim.Models.ViewModels.PrintableSticker>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Etiket Baskısı</title>
+    <style>
+        @@page { size: A4; margin: 10mm; }
+        body { font-family: "Segoe UI", Arial, sans-serif; margin: 16px; color: #000; }
+        .toolbar { margin-bottom: 16px; }
+        .toolbar button { padding: 8px 16px; font-size: 16px; }
+        .sheet { display: grid; grid-template-columns: repeat(auto-fill, 45mm); gap: 4mm; }
+        .sticker { width: 45mm; border: 1px dashed #999; padding: 3mm; box-sizing: border-box; text-align: center; break-inside: avoid; }
+        .sticker svg { width: 100%; height: auto; display: block; }
+        .sticker strong { display: block; font-size: 9pt; margin-bottom: 1mm; }
+        .sticker span { display: block; font-size: 7pt; margin-top: 1mm; }
+        @@media print { .toolbar { display: none; } body { margin: 0; } }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button type="button" onclick="window.print()">Yazdır</button>
+    </div>
+    <div class="sheet">
+        @foreach (var sticker in Model)
+        {
+            <div class="sticker">
+                <strong>Araç sahibine ulaşın</strong>
+                @Html.Raw(sticker.QrSvg)
+                <span>Kameranızla okutun, uygulama gerekmez.</span>
+            </div>
+        }
+    </div>
+</body>
+</html>
