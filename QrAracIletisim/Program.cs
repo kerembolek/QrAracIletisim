@@ -39,7 +39,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.FromMinutes(1));
 
 // SMS, WhatsApp and call masking; the fake providers write to the outbox table instead of a paid service
-builder.Services.AddMessagingProviders();
+builder.Services.AddMessagingProviders(builder.Configuration);
 
 builder.Services.AddSingleton<SecureHash>();
 builder.Services.AddScoped<PhoneVerificationService>();

@@ -13,7 +13,8 @@ public class OutboxController(
     ApplicationDbContext context,
     ISmsSender smsSender,
     IWhatsAppSender whatsAppSender,
-    ICallMaskingService callMaskingService) : Controller
+    ICallMaskingService callMaskingService,
+    ILogger<OutboxController> logger) : Controller
 {
     private const int PageSize = 200;
 
@@ -40,22 +41,31 @@ public class OutboxController(
         }
 
         const string body = "QR Araç İletişim deneme mesajı.";
-        switch (channel)
+        try
         {
-            case OutboxChannel.Sms:
-                await smsSender.SendAsync(phone, body);
-                break;
-            case OutboxChannel.WhatsApp:
-                await whatsAppSender.SendAsync(phone, body);
-                break;
-            case OutboxChannel.Call:
-                await callMaskingService.CreateMaskedCallAsync(phone, TimeSpan.FromMinutes(10));
-                break;
-            default:
-                return BadRequest();
+            switch (channel)
+            {
+                case OutboxChannel.Sms:
+                    await smsSender.SendAsync(phone, body);
+                    break;
+                case OutboxChannel.WhatsApp:
+                    await whatsAppSender.SendAsync(phone, body);
+                    break;
+                case OutboxChannel.Call:
+                    await callMaskingService.CreateMaskedCallAsync(phone, TimeSpan.FromMinutes(10));
+                    break;
+                default:
+                    return BadRequest();
+            }
+            TempData["Success"] = "Deneme gönderildi.";
+        }
+        catch (Exception ex)
+        {
+            // This form exists to test the provider, so its failure is shown instead of an error page
+            logger.LogError(ex, "Test send failed on channel {Channel}", channel);
+            TempData["Error"] = $"Sağlayıcı gönderemedi: {ex.Message}";
         }
 
-        TempData["Success"] = "Deneme gönderildi.";
         return RedirectToAction(nameof(Index));
     }
 }
