@@ -1,0 +1,42 @@
+@model QrAracIletisim.Models.ViewModels.ScanViewModel
+@{
+    ViewData["Title"] = "Araç Sahibine Ulaş";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        @if (Model.Status == StickerStatus.Revoked)
+        {
+            <div class="alert alert-warning">Bu etiket artık kullanılmıyor.</div>
+        }
+        else
+        {
+            <div class="text-center mb-3">
+                <h1 class="h3 mb-1">Araç sahibine ulaşın</h1>
+                <div class="text-muted"><i class="bi bi-car-front"></i> @Model.MaskedPlate</div>
+            </div>
+
+            @if (Model.Status == StickerStatus.Paused)
+            {
+                <div class="alert alert-warning">Araç sahibi şu anda mesaj almıyor.</div>
+            }
+            else
+            {
+                <form asp-action="Message" asp-route-token="@Model.Token" method="post" class="d-grid gap-2 mb-3">
+                    @foreach (var message in PresetMessages.All)
+                    {
+                        <button type="submit" name="presetKey" value="@message.Key" class="btn btn-outline-primary btn-lg text-start scan-option">
+                            <i class="bi @message.Icon me-2"></i>@message.Text
+                        </button>
+                    }
+                </form>
+                <form asp-action="Call" asp-route-token="@Model.Token" method="post" class="d-grid mb-3">
+                    <button type="submit" class="btn btn-success btn-lg scan-option"><i class="bi bi-telephone me-2"></i>Araç sahibini ara</button>
+                </form>
+                <p class="small text-muted text-center mb-0">
+                    Numaranız araç sahibiyle paylaşılmaz, araç sahibinin numarası da size gösterilmez.
+                </p>
+            }
+        }
+    </div>
+</div>

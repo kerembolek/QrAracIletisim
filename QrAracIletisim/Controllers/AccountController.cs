@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using QrAracIletisim.Data;
 using QrAracIletisim.Models;
@@ -82,6 +83,7 @@ public class AccountController(
     }
 
     [HttpPost]
+    [EnableRateLimiting(RateLimits.Sms)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterPhoneViewModel model)
     {

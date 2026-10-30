@@ -90,6 +90,12 @@ h1 {
   flex-shrink: 0;
 }
 
+/* Public scan page: large buttons that are easy to hit on a phone, next to a car */
+.scan-option {
+  font-size: 1.05rem;
+  padding: .85rem 1rem;
+}
+
 /* On narrow screens wide tables scroll sideways inside their own frame instead of widening the page */
 @media (max-width: 767.98px) {
   .table {

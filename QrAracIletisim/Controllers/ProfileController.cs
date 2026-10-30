@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using QrAracIletisim.Models;
 using QrAracIletisim.Models.ViewModels;
 using QrAracIletisim.Services;
@@ -38,6 +39,7 @@ public class ProfileController(
     }
 
     [HttpPost]
+    [EnableRateLimiting(RateLimits.Sms)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RequestPhoneChange(string? newPhone)
     {

@@ -43,6 +43,8 @@ builder.Services.AddMessagingProviders();
 
 builder.Services.AddSingleton<SecureHash>();
 builder.Services.AddScoped<PhoneVerificationService>();
+builder.Services.AddScoped<ContactService>();
+builder.Services.AddPublicRateLimits();
 
 builder.Services.AddControllersWithViews();
 
@@ -71,6 +73,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

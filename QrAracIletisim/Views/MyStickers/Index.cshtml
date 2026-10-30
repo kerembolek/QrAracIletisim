@@ -30,6 +30,7 @@ else
                     <td>@s.MessagesLast7Days</td>
                     <td class="text-nowrap">@s.ClaimedAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                     <td class="text-end text-nowrap">
+                        <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary"><i class="bi bi-clock-history"></i> Geçmiş</a>
                         @if (s.Status == StickerStatus.Active)
                         {
                             <form asp-action="Pause" asp-route-id="@s.Id" method="post" class="d-inline">

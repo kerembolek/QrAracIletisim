@@ -12,6 +12,8 @@ namespace QrAracIletisim.Controllers;
 [Authorize(Roles = Roles.Owner)]
 public class MyStickersController(ApplicationDbContext context) : Controller
 {
+    private const int HistorySize = 50;
+
     private string OwnerId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     public async Task<IActionResult> Index()
@@ -35,6 +37,75 @@ public class MyStickersController(ApplicationDbContext context) : Controller
         return View(stickers
             .Select(s => new OwnerStickerRow(s.Id, Vehicle(s.Plate, s.Nickname), s.Status, s.ClaimedAt, s.Messages))
             .ToList());
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var ownerId = OwnerId;
+        var sticker = await context.Stickers.AsNoTracking().Include(s => s.Vehicle)
+            .FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == ownerId);
+        if (sticker is null)
+            return NotFound();
+
+        var blocked = await context.BlockedVisitors.AsNoTracking()
+            .Where(b => b.StickerId == id)
+            .OrderByDescending(b => b.CreatedAt)
+            .ToListAsync();
+        var blockedHashes = blocked.Select(b => b.IpHash).ToHashSet();
+
+        var contacts = await context.ContactRequests.AsNoTracking()
+            .Where(c => c.StickerId == id)
+            .OrderByDescending(c => c.CreatedAt)
+            .Take(HistorySize)
+            .ToListAsync();
+
+        return View(new StickerDetailsViewModel
+        {
+            Id = sticker.Id,
+            Vehicle = Vehicle(sticker.Vehicle!.Plate, sticker.Vehicle.Nickname),
+            Status = sticker.Status,
+            HourlyMessageLimit = sticker.HourlyMessageLimit,
+            Contacts = contacts.Select(c => new ContactRow(c.Id, c.CreatedAt, c.Type,
+                c.Type == ContactType.CallRequest ? "Arama isteği" : PresetMessages.TextFor(c.PresetKey) ?? "-",
+                c.Result, VisitorLabel(c.IpHash), blockedHashes.Contains(c.IpHash))).ToList(),
+            Blocked = blocked.Select(b => new BlockedRow(b.Id, VisitorLabel(b.IpHash), b.CreatedAt)).ToList()
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Block(int id)
+    {
+        var ownerId = OwnerId;
+        var contact = await context.ContactRequests.AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id && c.Sticker!.OwnerId == ownerId);
+        if (contact is null)
+            return NotFound();
+
+        if (!await context.BlockedVisitors.AnyAsync(b => b.StickerId == contact.StickerId && b.IpHash == contact.IpHash))
+        {
+            context.BlockedVisitors.Add(new BlockedVisitor { StickerId = contact.StickerId, IpHash = contact.IpHash });
+            await context.SaveChangesAsync();
+        }
+
+        TempData["Success"] = "Ziyaretçi bu etiket için engellendi.";
+        return RedirectToAction(nameof(Details), new { id = contact.StickerId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Unblock(int id)
+    {
+        var ownerId = OwnerId;
+        var blocked = await context.BlockedVisitors.FirstOrDefaultAsync(b => b.Id == id && b.Sticker!.OwnerId == ownerId);
+        if (blocked is null)
+            return NotFound();
+
+        context.BlockedVisitors.Remove(blocked);
+        await context.SaveChangesAsync();
+
+        TempData["Success"] = "Engel kaldırıldı.";
+        return RedirectToAction(nameof(Details), new { id = blocked.StickerId });
     }
 
     [HttpPost]
@@ -72,6 +143,9 @@ public class MyStickersController(ApplicationDbContext context) : Controller
         }
         return RedirectToAction(nameof(Index));
     }
+
+    // A short label so an owner can tell repeat visitors apart without seeing any address
+    private static string VisitorLabel(string ipHash) => ipHash[..Math.Min(6, ipHash.Length)];
 
     private static string Vehicle(string plate, string? nickname) =>
         string.IsNullOrEmpty(nickname) ? Plates.Mask(plate) : $"{nickname} ({Plates.Mask(plate)})";
