@@ -7,5 +7,8 @@ public class ApplicationUser : IdentityUser
 {
     public string? DisplayName { get; set; }
 
+    // Owners choose how they hear about messages; SMS unless they switch to WhatsApp
+    public bool NotifyViaWhatsApp { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

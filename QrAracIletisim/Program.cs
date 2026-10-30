@@ -41,6 +41,9 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options => options.Val
 // SMS, WhatsApp and call masking; the fake providers write to the outbox table instead of a paid service
 builder.Services.AddMessagingProviders();
 
+builder.Services.AddSingleton<SecureHash>();
+builder.Services.AddScoped<PhoneVerificationService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

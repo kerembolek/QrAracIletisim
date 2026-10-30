@@ -1,0 +1,43 @@
+@model QrAracIletisim.Models.ViewModels.ClaimViewModel
+@{
+    ViewData["Title"] = "Etiketi Sahiplen";
+    var token = ViewData["Token"] as string;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3"><i class="bi bi-sticky"></i> Etiketi Sahiplen</h1>
+
+                @if (User.IsInRole(Roles.Owner))
+                {
+                    <p class="text-muted">Bu etiketi aracınıza bağlayın. Plakanız etiketi okutanlara yalnızca maskeli gösterilir.</p>
+                    <form asp-action="Index" asp-route-token="@token" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Plate" class="form-label"></label>
+                            <input asp-for="Plate" class="form-control text-uppercase" placeholder="34 ABC 123" />
+                            <span asp-validation-for="Plate" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Nickname" class="form-label"></label>
+                            <input asp-for="Nickname" class="form-control" placeholder="Ör. Aile arabası" />
+                            <span asp-validation-for="Nickname" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Etiketi Bağla</button>
+                    </form>
+                }
+                else if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="alert alert-warning mb-0">Etiketleri yalnızca araç sahibi hesapları sahiplenebilir.</div>
+                }
+                else
+                {
+                    <p class="text-muted">Bu etiket henüz kimseye ait değil. Hesap açarak aracınıza bağlayabilirsiniz.</p>
+                    <a asp-controller="Account" asp-action="Register" asp-route-claim="@token" class="btn btn-primary w-100 mb-2">Hesap Oluştur</a>
+                    <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@($"/claim/{token}")" class="btn btn-outline-secondary w-100">Zaten hesabım var</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

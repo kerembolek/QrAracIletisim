@@ -20,7 +20,7 @@ public class Sticker
 
     public int Id { get; set; }
 
-    // Random, unguessable value printed in the QR code (/s/{token}); the numeric Id never leaves the server
+    // Random, unguessable value printed in the QR code (/s/{token}); public pages never use the numeric Id
     [Required]
     [StringLength(32)]
     public string Token { get; set; } = "";

@@ -1,0 +1,57 @@
+@model List<QrAracIletisim.Models.ViewModels.OwnerStickerRow>
+@{
+    ViewData["Title"] = "Etiketlerim";
+}
+
+<h1><i class="bi bi-sticky"></i> Etiketlerim</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">Henüz bağlı bir etiketiniz yok. Yeni bir etiket eklemek için QR kodunu okutun.</div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Araç</th>
+                <th>Durum</th>
+                <th>Son 7 gün mesaj</th>
+                <th>Bağlanma tarihi</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.Vehicle</td>
+                    <td><span class="badge @s.Status.BadgeClass()">@s.Status.Label()</span></td>
+                    <td>@s.MessagesLast7Days</td>
+                    <td class="text-nowrap">@s.ClaimedAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td class="text-end text-nowrap">
+                        @if (s.Status == StickerStatus.Active)
+                        {
+                            <form asp-action="Pause" asp-route-id="@s.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-warning"><i class="bi bi-pause"></i> Duraklat</button>
+                            </form>
+                        }
+                        @if (s.Status == StickerStatus.Paused)
+                        {
+                            <form asp-action="Resume" asp-route-id="@s.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-play"></i> Devam Et</button>
+                            </form>
+                        }
+                        @if (s.Status != StickerStatus.Revoked)
+                        {
+                            <form asp-action="Revoke" asp-route-id="@s.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Etiket kalıcı olarak iptal edilecek. Emin misiniz?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-circle"></i> İptal Et</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

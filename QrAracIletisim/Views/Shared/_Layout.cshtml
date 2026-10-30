@@ -47,6 +47,15 @@
                             <a class="nav-link@(Active("Outbox"))" asp-area="" asp-controller="Outbox" asp-action="Index"><i class="bi bi-envelope-paper"></i> Giden Kutusu</a>
                         </li>
                         }
+                        @if (User.IsInRole(Roles.Owner))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link@(Active("MyStickers"))" asp-area="" asp-controller="MyStickers" asp-action="Index"><i class="bi bi-sticky"></i> Etiketlerim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link@(Active("Profile"))" asp-area="" asp-controller="Profile" asp-action="Index"><i class="bi bi-person-gear"></i> Hesabım</a>
+                        </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
