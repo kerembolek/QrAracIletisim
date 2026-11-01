@@ -144,4 +144,4 @@ Real provider integration, password reset, automated tests and a hosted demo are
 
 ## License
 
-[MIT](LICENSE)
+Source-available, not open source: you can read the code and run it on your own computer to evaluate it; company use, hosting, and distribution need written permission. See [LICENSE](LICENSE). Versions up to commit `dd32275` remain under the MIT License.

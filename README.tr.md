@@ -144,4 +144,4 @@ Gerçek sağlayıcı entegrasyonu, şifre sıfırlama, otomatik testler ve canl�
 
 ## Lisans
 
-[MIT](LICENSE)
+Kaynak kodu görünürdür ama açık kaynak değildir: kodu okuyabilir, değerlendirmek için kendi bilgisayarınızda çalıştırabilirsiniz; şirkette kullanmak, sunucuda yayınlamak veya dağıtmak yazılı izin gerektirir. Ayrıntılar [LICENSE](LICENSE) dosyasındadır. `dd32275` commit'ine kadarki sürümler MIT Lisansı altında kalır.
